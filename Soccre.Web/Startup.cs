@@ -37,9 +37,9 @@ namespace Soccre.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("SoccerConnection"));
             });
 
-            services.AddTransient<SeedDb>();
-            services.AddScoped<IImageHelper, ImageHelper>();
-            services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddTransient<SeedDb>();// variable of only use
+            services.AddSingleton<IImageHelper, ImageHelper>();//instance and leave memory -- class static--
+            services.AddScoped<IConverterHelper, ConverterHelper>();//instace each injection
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);          
         }
 

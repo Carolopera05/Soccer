@@ -24,6 +24,7 @@ namespace Soccer.Web.Helpers
                 .OrderBy(t => t.Text)
                 .ToList();
 
+
             list.Insert(0, new SelectListItem
             {
                 Text = "[Select a team...]",

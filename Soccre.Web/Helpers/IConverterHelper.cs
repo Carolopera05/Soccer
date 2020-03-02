@@ -22,5 +22,10 @@ namespace Soccer.Web.Helpers
 
         GroupDetailViewModel ToGroupDetailViewModel(GroupDetailEntity groupDetailEntity);
 
+        Task<MatchEntity> ToMatchEntityAsync(MatchViewModel model, bool isNew);
+
+        MatchViewModel ToMatchViewModel(MatchEntity matchEntity);
+
+
     }
 }

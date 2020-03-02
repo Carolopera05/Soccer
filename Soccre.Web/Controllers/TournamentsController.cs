@@ -300,5 +300,84 @@ namespace Soccer.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> AddMatch(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var groupEntity = await _context.Groups.FindAsync(id);
+            if (groupEntity == null)
+            {
+                return NotFound();
+            }
+
+            var model = new MatchViewModel
+            {
+                Group = groupEntity,
+                GroupId = groupEntity.Id,
+                Teams = _combosHelper.GetComboTeams(groupEntity.Id)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMatch(MatchViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.LocalId != model.VisitorId)
+                {
+                    var matchEntity = await _converterHelper.ToMatchEntityAsync(model, true);
+                    _context.Add(matchEntity);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction($"{nameof(DetailsGroup)}/{model.GroupId}");
+                }
+
+                ModelState.AddModelError(string.Empty, "The local and visitor must be differents teams.");
+            }
+
+            model.Group = await _context.Groups.FindAsync(model.GroupId);
+            model.Teams = _combosHelper.GetComboTeams(model.GroupId);
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditGroupDetail(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var groupDetailEntity = await _context.GroupDetails
+                .Include(gd => gd.Group)
+                .Include(gd => gd.Team)
+                .FirstOrDefaultAsync(gd => gd.Id == id);
+            if (groupDetailEntity == null)
+            {
+                return NotFound();
+            }
+
+            var model = _converterHelper.ToGroupDetailViewModel(groupDetailEntity);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGroupDetail(GroupDetailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var groupDetailEntity = await _converterHelper.ToGroupDetailEntityAsync(model, false);
+                _context.Update(groupDetailEntity);
+                await _context.SaveChangesAsync();
+                return RedirectToAction($"{nameof(DetailsGroup)}/{model.GroupId}");
+            }
+
+            return View(model);
+        }
     }
 }

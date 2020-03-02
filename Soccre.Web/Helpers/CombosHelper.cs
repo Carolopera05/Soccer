@@ -19,11 +19,10 @@ namespace Soccer.Web.Helpers
             List<SelectListItem> list = _context.Teams.Select(t => new SelectListItem
             {
                 Text = t.Name,
-                Value = $"{t.Id}" //interpolacion
+                Value = $"{t.Id}"
             })
                 .OrderBy(t => t.Text)
                 .ToList();
-
 
             list.Insert(0, new SelectListItem
             {

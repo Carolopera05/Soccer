@@ -35,6 +35,7 @@ namespace Soccer.Prism
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<TournamentsPage, TournamentsPageViewModel>();
             containerRegistry.RegisterForNavigation<GroupsPage, GroupsPageViewModel>();
+            containerRegistry.RegisterForNavigation<MatchesPage, MatchesPageViewModel>();
         }
     }
 }

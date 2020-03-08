@@ -25,7 +25,6 @@ namespace Soccer.Common.Models
                             ? "https://soccerwebcarolinalopera.azurewebsites.net//images/noimage.png"
                             : $"https://soccerwebcarolinalopera.azurewebsites.net{LogoPath.Substring(1)}";
 
-
         public List<GroupResponse> Groups { get; set; }
     }
 }

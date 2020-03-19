@@ -90,9 +90,13 @@ namespace Soccer.Web.Data
 
             await _userHelper.AddUserAsync(user, "123456");
             await _userHelper.AddUserToRoleAsync(user, userType.ToString());
-        }
 
-        return user;
+            var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+            await _userHelper.ConfirmEmailAsync(user, token);
+
+            }
+
+            return user;
     }
 
     private async Task CheckRolesAsync()
@@ -100,9 +104,6 @@ namespace Soccer.Web.Data
         await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
         await _userHelper.CheckRoleAsync(UserType.User.ToString());
     }
-
-
-
 
     private async Task CheckTeamsAsync()
         {

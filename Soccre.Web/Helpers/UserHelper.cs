@@ -36,8 +36,12 @@ namespace Soccer.Web.Helpers
         public async Task<IdentityResult> UpdateUserAsync(UserEntity user)
         {
             return await _userManager.UpdateAsync(user);
-        }
+        }              
 
+        public async Task<SignInResult> ValidatePasswordAsync(UserEntity user, string password)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(user, password, false);
+        }
 
         public async Task<UserEntity> AddUserAsync(AddUserViewModel model, string path, UserType userType)
         {

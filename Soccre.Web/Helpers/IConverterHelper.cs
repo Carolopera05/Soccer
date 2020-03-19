@@ -28,6 +28,10 @@ namespace Soccer.Web.Helpers
 
         MatchViewModel ToMatchViewModel(MatchEntity matchEntity);
 
+        PredictionResponse ToPredictionResponse(PredictionEntity predictionEntity);
+
+        MatchResponse ToMatchResponse(MatchEntity matchEntity);
+
         TournamentResponse ToTournamentResponse(TournamentEntity tournamentEntity);
 
         List<TournamentResponse> ToTournamentResponse(List<TournamentEntity> tournamentEntities);

@@ -20,6 +20,11 @@ namespace Soccer.Web.Data.Entities
         [Display(Name = "Logo")]
         public string LogoPath { get; set; }
 
+        [Display(Name = "Logo")]
+        public string LogoFullPath => string.IsNullOrEmpty(LogoPath)
+        ? "https://soccerwebcarolinalopera.azurewebsites.net//images/noimage.png"
+        : $"https://soccerwebcarolinalopera.azurewebsites.net{LogoPath.Substring(1)}";
+
         public ICollection<GroupDetailEntity> GroupDetails { get; set; }
 
         public ICollection<UserEntity> Users { get; set; }

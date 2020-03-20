@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace Soccer.Web.Controllers.API
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("api/[controller]")]
 

@@ -21,19 +21,83 @@ namespace Soccer.Web.Controllers.API
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
         public AccountController(
             DataContext dataContext,
             IUserHelper userHelper,
             IMailHelper mailHelper,
-            IImageHelper imageHelper)
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _dataContext = dataContext;
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut]
+        public async Task<IActionResult> PutUser([FromBody] UserRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            CultureInfo cultureInfo = new CultureInfo(request.CultureInfo);
+            Resource.Culture = cultureInfo;
+
+            UserEntity userEntity = await _userHelper.GetUserAsync(request.Email);
+            if (userEntity == null)
+            {
+                return BadRequest(Resource.UserDoesntExists);
+            }
+
+            string picturePath = userEntity.PicturePath;
+            if (request.PictureArray != null && request.PictureArray.Length > 0)
+            {
+                picturePath = _imageHelper.UploadImage(request.PictureArray, "Users");
+            }
+
+            userEntity.FirstName = request.FirstName;
+            userEntity.LastName = request.LastName;
+            userEntity.Address = request.Address;
+            userEntity.PhoneNumber = request.Phone;
+            userEntity.Document = request.Phone;
+            userEntity.Team = await _dataContext.Teams.FindAsync(request.TeamId);
+            userEntity.PicturePath = picturePath;
+
+            IdentityResult respose = await _userHelper.UpdateUserAsync(userEntity);
+            if (!respose.Succeeded)
+            {
+                return BadRequest(respose.Errors.FirstOrDefault().Description);
+            }
+
+            return NoContent();
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
+        [Route("GetUserByEmail")]
+        public async Task<IActionResult> GetUserByEmail([FromBody] EmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            CultureInfo cultureInfo = new CultureInfo(request.CultureInfo);
+            Resource.Culture = cultureInfo;
+
+            UserEntity userEntity = await _userHelper.GetUserAsync(request.Email);
+            if (userEntity == null)
+            {
+                return NotFound(Resource.UserDoesntExists);
+            }
+
+            return Ok(_converterHelper.ToUserResponse(userEntity));
+        }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
